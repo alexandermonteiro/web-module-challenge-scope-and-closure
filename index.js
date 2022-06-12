@@ -1,27 +1,31 @@
-//❗❗ PLEASE READ THE README file for project instructions, helpful resources, additional tasks and stretch problems, and more ❗❗ 
+//❗❗ PLEASE READ THE README file for project instructions, helpful resources, additional tasks and stretch problems, and more ❗❗
 
 // ⭐️ Example Challenge START ⭐️
 
 /**Example Task : processFirstItem()
  * This example shows how you might go about solving the rest of the tasks
- * 
+ *
  * Use the higher order function processFirstItem below to do the following:
  *  1. Receive an array of strings in a parameter
  *  2. Receive a callback function that takes a string as its argument in a parameter
- *  3. Return the result of invoking the callback function and passing in the FIRST 
+ *  3. Return the result of invoking the callback function and passing in the FIRST
  *     element in the array as the argument
- * 
+ *
  * The following code is demonstrating a way of completing this task
  * It returns the string `foofoo`
-*/
+ */
 
 function processFirstItem(stringList, callback) {
-  return callback(stringList[0])
+  return callback(stringList[0]);
 }
-console.log('example task:', processFirstItem(['foo','bar'],function(str){return str+str}));
+console.log(
+  "example task:",
+  processFirstItem(["foo", "bar"], function (str) {
+    return str + str;
+  })
+);
 
 // ⭐️ Example Challenge END ⭐️
-
 
 ///// M V P ///////
 
@@ -31,22 +35,35 @@ console.log('example task:', processFirstItem(['foo','bar'],function(str){return
   
   1. What is the difference between counter1 and counter2?
   
+  counter 1 uses a local scope variable called count 
+  countr 2 uses a global scope variable called count 
+ 
   2. Which of the two uses a closure? How can you tell?
   
+  Counter 1.
+  Because Counter 1 uses a variable called count that is declared in its parent function, counterMaker.
+
+
   3. In what scenario would the counter1 code be preferable? In what scenario would 
      counter2 be better?  
+
+     Counter 1 - local scope - I would use a local scope if I don't neeed to access from outside that function and it will be contained .
+     Counter 2 - global scope - I would use a global scope if I need to access the variable multiple times or if I am writing it to an object 
 */
 
 // counter1 code
 function counterMaker() {
   let count = 0;
   return function counter() {
-   return count++;
-  }
+    return count++;
+  };
 }
 
 const counter1 = counterMaker();
 
+console.log("counter1", counter1());
+console.log("counter1-2", counter1());
+console.log("counter1-3", counter1());
 // counter2 code
 let count = 0;
 
@@ -54,6 +71,9 @@ function counter2() {
   return count++;
 }
 
+console.log("counter2-1", counter2());
+console.log("counter2-2", counter2());
+console.log("counter2-3", counter2());
 
 /* ⚾️⚾️⚾️ Task 2: inning() ⚾️⚾️⚾️
 Use the inning function below to do the following:
@@ -64,10 +84,10 @@ Use the inning function below to do the following:
 NOTE: This will be a callback function for the tasks below
 */
 
-function inning(/*Code Here*/){
-    /*Code Here*/
+function inning() {
+  return Math.floor(Math.random() * 3);
 }
-
+console.log("task2", inning());
 
 /* ⚾️⚾️⚾️ Task 3: finalScore() ⚾️⚾️⚾️
 Use the finalScore function below to do the following:
@@ -81,12 +101,22 @@ Use the finalScore function below to do the following:
   "Home": 11,
   "Away": 5
 }
-*/ 
+*/
 
-function finalScore(/*Code Here*/){
-  /*Code Here*/
+function finalScore(inning, inningnumbers) {
+  let away = 0;
+  let home = 0;
+  for (let i = 0; i < inningnumbers; i++) {
+    home += inning();
+    away += inning();
+  }
+
+  return {
+    Away: away,
+    Home: home,
+  };
 }
-
+console.log("task3", finalScore(inning, 9));
 
 /* ⚾️⚾️⚾️ Task 4: getInningScore() ⚾️⚾️⚾️
 Use the getInningScore() function below to do the following:
@@ -100,12 +130,13 @@ For example: invoking getInningScore(inning) might return this object:
 }
   */
 
-
-function getInningScore(/*Your Code Here */) {
-  /*Your Code Here */
-
+function getInningScore(inning) {
+  return {
+    Away: inning(),
+    Home: inning(),
+  };
 }
-
+console.log("task4", getInningScore(inning));
 
 /* STRETCH: ⚾️⚾️⚾️ Task 5: scoreboard() ⚾️⚾️⚾️
 Use the scoreboard function below to do the following:
@@ -147,17 +178,42 @@ Use the scoreboard function below to do the following:
   "This game will require extra innings: Away 10 - Home 10"
 ] */
 // NOTE: There is no test associated with this code; if your output matches the given example, consider it complete!
-function scoreboard(/* CODE HERE */) {
-  /* CODE HERE */
+function scoreboard(getInningScore, inning, inningnumbers) {
+  // 1. Receive the callback function in the first parameter that will take `getInningScore` from Task 4 as its argument
+  // 2. Receive the callback function in a second parameter that will take `inning` from Task 2 as its argument
+  // 3. Receive a number in a third parameter that will take the number of innings to be played as its argument
+  const scoreboardArray = [];
+  // 4. Return an array where each of it's index values equals a string stating the
+  // Home and Away team's scores for each inning.  Not the cummulative score (see the example below).
+  let awayScore = 0;
+  let homeScore = 0;
+
+  for (let i = 0; i < inningnumbers; i++) {
+    let inningScore = getInningScore(inning);
+    scoreboardArray.push(
+      `Inning ${i + 1}: Away ${inningScore.Away} - Home ${inningScore.Home}`
+    );
+    homeScore += inningScore.Home;
+    awayScore += inningScore.Away;
+  }
+
+  // If the final score is a tie, add the tie-game line to the end
+  if (awayScore === homeScore) {
+    scoreboardArray.push = `This game will require extra innings: Away ${awayScore} - Home ${homeScore}`;
+  } else {
+    // If the final score is not a tie, add the final score line
+    scoreboardArray.push = `Final Score: Away ${awayScore} - Home ${homeScore}`;
+  }
+  // Return the scoreboard of each inning
+  return scoreboardArray;
 }
 
-
-
+console.log("task5", scoreboard(getInningScore, inning, 9));
 
 /* 🛑🛑🛑🛑🛑 Please do not modify anything below this line 🛑🛑🛑🛑🛑 */
-function foo(){
-  console.log('its working');
-  return 'bar';
+function foo() {
+  console.log("its working");
+  return "bar";
 }
 foo();
 module.exports = {
@@ -169,4 +225,4 @@ module.exports = {
   finalScore,
   getInningScore,
   scoreboard,
-}
+};
